@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.xiachao.mapper.StudentMapper">
+    <resultMap id="stuMapper" type="com.xiachao.pojo.Student">
+        <id column="stu_id" property="stu_id"></id>
+        <result column="stud_name" property="stud_name"></result>
+        <result column="sex" property="sex"></result>
+        <result column="grade" property="grade"></result>
+
+        <!--配置集合信息-->
+        <collection property="courseList" ofType="com.xiachao.pojo.Course">
+            <id column="courseId" property="courseId"></id>
+            <result column="course_name" property="course_name"></result>
+            <result column="credit" property="credit"></result>
+        </collection>
+    </resultMap>
+
+    <!--查询某个学生的信息以及所关联的课程信息-->
+    <select id="findAllStuAndCourse" resultMap="stuMapper">
+        SELECT * FROM student stu,course c,stu_course st
+        WHERE stu.stu_id=st.stu_id AND c.course_id=st.course_id;
+    </select>
+
+    <!--完成学生和课程的关联保存-->
+    <insert id="insert" parameterType="com.xiachao.pojo.Student">
+        insert into student(stu_id,stud_name,sex,grade)
+        values(#{stu_id},#{stud_name},#{sex},#{grade})
+    </insert>
+
+    <insert id="insertRelation">
+        insert into stu_course(stu_id,course_id)
+        values(#{stu_id},#{course_id})
+    </insert>
+
+
+    <select id="findAllStudent" resultType="com.xiachao.pojo.Student">
+        select * from student
+    </select>
+
+    <select id="findStudentById" parameterType="java.lang.Integer" resultType="com.xiachao.pojo.Student">
+        select * from student where stu_id = #{stu_id}
+    </select>
+
+    <!--姓名：模糊查询-->
+    <select id="findStudentByName" parameterType="java.lang.String" resultType="com.xiachao.pojo.Student">
+        select * from student where stud_name like concat(concat('%',#{stud_name}),'%')
+    </select>
+
+    <!--性别：精确查询-->
+    <select id="findStudentBySex" parameterType="java.lang.Integer" resultType="com.xiachao.pojo.Student">
+        select * from student where sex = #{sex}
+    </select>
+
+    <!--年级：精确查询 学生删除时，需要删除与课程的关联信息-->
+    <select id="findStudentByGrade" parameterType="java.lang.Integer" resultType="com.xiachao.pojo.Student">
+        select * from student where grade = #{grade}
+    </select>
+
+    <insert id="insertStudent" parameterType="com.xiachao.pojo.Student">
+        insert into student value(#{stu_id},#{stud_name},#{sex},#{grade})
+    </insert>
+
+
+    <update id="updateStudent" parameterType="com.xiachao.pojo.Student">
+        update student set stud_name = #{stud_name} ,sex = #{sex},grade = #{grade}
+        where stu_id = #{stu_id}
+    </update>
+
+    <delete id="deleteStudent" parameterType="java.lang.String">
+        delete from student where stud_name = #{stud_name}
+    </delete>
+</mapper>

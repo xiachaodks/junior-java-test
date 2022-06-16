@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xiachao.mapper.CourseMapper">
+
+    <select id="findAllCourse" resultType="com.xiachao.pojo.Course">
+        select * from course
+    </select>
+
+    <insert id="insertCourse" parameterType="com.xiachao.pojo.Student">
+        insert into course(course_id,course_name,credit)
+        values( #{course_id},#{course_name},#{credit})
+    </insert>
+
+
+    <!--课程名：模糊查询-->
+    <select id="findCourseByCourseName" parameterType="java.lang.String" resultType="com.xiachao.pojo.Course">
+        select * from course where course_name like concat(concat('%',#{course_name}),'%')
+    </select>
+</mapper>
